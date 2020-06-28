@@ -1,0 +1,14 @@
+---
+
+- name: Converge
+  hosts: all
+  become: true
+  become_user: terraformuser
+  vars:
+    terraform_min_version: 0.11.9
+    terraform_max_version: 0.12.0
+    terraform_exec_projects:
+      - project_path: /home/terraformuser/projects/null
+        plan_file: null.tfplan
+  roles:
+    - role: xanmanning.terraform_project

@@ -1,0 +1,39 @@
+---
+
+- name: Prepare containers for local-user install testing
+  hosts: all
+  become: true
+  vars:
+    terraform_version: 0.11.14
+    terraform_install_dir: /usr/bin
+  pre_tasks:
+    - name: Ensure a user group exists
+      group:
+        name: user
+        state: present
+
+    - name: Ensure a normal user exists
+      user:
+        name: terraformuser
+        group: user
+        state: present
+
+    - name: Ensure apt cache is updated
+      apt:
+        update_cache: true
+      when: ansible_pkg_mgr == 'apt'
+
+    - name: Ensure unzip is installed
+      package:
+        name: unzip
+        state: present
+
+    - name: Copy project directory
+      copy:
+        src: null/
+        dest: /home/terraformuser/projects/null/
+        owner: terraformuser
+        group: user
+
+  roles:
+    - xanmanning.terraform

@@ -1,0 +1,21 @@
+---
+
+- name: Ensure Terraform project is in the requested state
+  terraform:
+    project_path: "{{ proj.project_path }}"
+    state: "{{ proj.state | default('present') }}"
+    plan_file: "{{ proj.plan_file | default('project.tfplan') }}"
+    state_file: "{{ proj.state_file | default(omit) }}"
+    workspace: "{{ proj.workspace | default(omit) }}"
+    purge_workspace: "{{ proj.purge_workspace | default(false) }}"
+    lock: "{{ proj.lock | default(omit) }}"
+    lock_timeout: "{{ proj.lock_timeout | default(omit) }}"
+    targets: "{{ proj.targets | default(omit) }}"
+    variables_file: "{{ proj.variables_file | default(omit) }}"
+    variables: "{{ proj.variables | default(omit) }}"
+  register: terraform_exec_result
+
+- name: Ensure Terraform plan file is removed after run
+  file:
+    path: "{{ proj.plan_file | default('project.tfplan') }}"
+    state: absent

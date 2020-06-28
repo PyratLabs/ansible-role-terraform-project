@@ -1,0 +1,55 @@
+---
+
+# Thanks to geerlingguy!
+
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: terraform_project
+  matrix:
+    # Local user install
+    - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: centos8
+    - MOLECULE_DISTRO: debian10
+    - MOLECULE_DISTRO: ubuntu1804
+    - MOLECULE_DISTRO: fedora29
+    - MOLECULE_DISTRO: amazonlinux2
+
+    # Target version install
+    - MOLECULE_DISTRO: centos7
+      MOLECULE_PREPARE_PLAYBOOOK: prepare-target.yml
+      MOLECULE_PLAYBOOK: playbook-target.yml
+    - MOLECULE_DISTRO: centos8
+      MOLECULE_PREPARE_PLAYBOOOK: prepare-target.yml
+      MOLECULE_PLAYBOOK: playbook-target.yml
+    - MOLECULE_DISTRO: debian10
+      MOLECULE_PREPARE_PLAYBOOOK: prepare-target.yml
+      MOLECULE_PLAYBOOK: playbook-target.yml
+    - MOLECULE_DISTRO: ubuntu1804
+      MOLECULE_PREPARE_PLAYBOOOK: prepare-target.yml
+      MOLECULE_PLAYBOOK: playbook-target.yml
+    - MOLECULE_DISTRO: fedora29
+      MOLECULE_PREPARE_PLAYBOOOK: prepare-target.yml
+      MOLECULE_PLAYBOOK: playbook-target.yml
+    - MOLECULE_DISTRO: amazonlinux2
+      MOLECULE_PREPARE_PLAYBOOOK: prepare-target.yml
+      MOLECULE_PLAYBOOK: playbook-target.yml
+install:
+  # Install test dependencies.
+  - pip install molecule==2.22 docker
+
+before_script:
+  # Use actual Ansible Galaxy role name for the project directory.
+  - cd ../
+  - mv ansible-role-terraform-controller xanmanning.$ROLE_NAME
+  - cd xanmanning.$ROLE_NAME
+
+script:
+  # Run tests.
+  - molecule check
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

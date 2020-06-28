@@ -1,0 +1,42 @@
+---
+
+- name: Check to see if plan file exists
+  stat:
+    path: "{{ proj.project_path }}/{{ proj.plan_file | default('project.tfplan') }}"
+  register: check_terraform_tfplan
+  check_mode: false
+
+- name: Fail the play if Terraform has not been run in check mode
+  fail:
+    msg: "{{ proj.plan_file | default('project.tfplan') }} not found. Please ensure you run ansible in check-mode first."
+  when: not check_terraform_tfplan.stat.exists
+
+- name: Extract the Terraform Plan Summary (Legacy)
+  shell: >
+    set -o pipefail && \
+    terraform plan -no-color {{ proj.plan_file | default('project.tfplan') }} | \
+    grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
+    sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+  args:
+    chdir: "{{ proj.project_path }}"
+  when: terraform_version is version('0.12.0', '<')
+  check_mode: false
+  changed_when: false
+  register: terraform_plan_legacy
+
+- name: Extract the Terraform Plan Summary
+  shell: >
+    set -o pipefail && \
+    terraform show -no-color {{ proj.plan_file | default('project.tfplan') }} | \
+    grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
+    sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+  args:
+    chdir: "{{ proj.project_path }}"
+  when: terraform_version is version('0.12.0', '>=')
+  check_mode: false
+  changed_when: false
+  register: terraform_plan_show
+
+- name: Ensure terraform_plan is defined
+  set_fact:
+    terraform_plan: "{{ terraform_plan_legacy.stdout | default(terraform_plan_show.stdout) }}"

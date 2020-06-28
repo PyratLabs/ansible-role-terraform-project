@@ -1,0 +1,31 @@
+---
+
+# Specify a minimum version of Terraform, eg. `0.11.2`. Specify `false` to skip.
+terraform_min_version: false
+
+# Specify a maximum version of Terraform, eg. `0.12.0`. Specify `false` to skip.
+terraform_max_version: false
+
+# List of Terraform projects to execute
+terraform_exec_projects: []
+
+# Example of terraform_exec_projects
+# terraform_exec_projects:
+#   - project_path: project/       # Required
+#     state: present               # Optional, default: present
+#     plan_file: project.tfplan    # Optional, default: project.tfplan
+#     state_file: project.tfstate  # Optional, default: project.tfstate
+#     workspace: default           # Optional, workspace to use.
+#     purge_workspace: false       # Optional, delete workspace on destroy?
+#     lock: true                   # Optional, state file locking if supported.
+#     lock_timeout: 300            # Optional, how long to lock if supported.
+#     force_init: true             # Optional
+#     backend_config:              # Optional, key-values to provide at init stage.
+#       region: "eu-west-1"
+#       bucket: "some-bucket"
+#       key: "random.tfstate"
+#     targets:                     # Optional, list of specific resources to plan/apply to.
+#       some_target
+#     variables_file: dev.tfvars   # Optional, path to variables file.
+#     variables:                   # Optional, key-values for variables.
+#       vm_size: t3.large

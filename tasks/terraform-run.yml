@@ -1,0 +1,11 @@
+---
+
+- include_tasks: terraform-plan.yml
+  when: ansible_check_mode
+
+- include_tasks: plan-checks.yml
+
+- include_tasks: terraform-apply.yml
+  when: not ansible_check_mode
+
+- include_tasks: terraform-output.yml
