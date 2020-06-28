@@ -19,6 +19,7 @@
     sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
   args:
     chdir: "{{ proj.project_path }}"
+    executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   when: terraform_version is version('0.12.0', '<')
   check_mode: false
   changed_when: false
@@ -32,6 +33,7 @@
     sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
   args:
     chdir: "{{ proj.project_path }}"
+    executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   when: terraform_version is version('0.12.0', '>=')
   check_mode: false
   changed_when: false
