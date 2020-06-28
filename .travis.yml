@@ -38,16 +38,17 @@ env:
       MOLECULE_PLAYBOOK: playbook-target.yml
 install:
   # Install test dependencies.
-  - pip install molecule==2.22 docker
+  - pip install molecule==2.22 docker ansible
 
 before_script:
   # Use actual Ansible Galaxy role name for the project directory.
   - cd ../
-  - mv ansible-role-terraform-controller xanmanning.$ROLE_NAME
+  - mv ansible-role-terraform-project xanmanning.$ROLE_NAME
   - cd xanmanning.$ROLE_NAME
 
 script:
   # Run tests.
+  - ansible-galaxy install xanmanning.terraform -p molecule/default/roles/
   - molecule check
   - molecule test
 
