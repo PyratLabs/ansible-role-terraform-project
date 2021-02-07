@@ -1,7 +1,10 @@
 ---
 
 - include_tasks: terraform-plan.yml
-  when: ansible_check_mode
+  when:
+    - ansible_check_mode
+    - not terraform_destroy_all
+    - proj.state is not defined or proj.state != "absent"
 
 - include_tasks: plan-checks.yml
 

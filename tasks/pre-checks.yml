@@ -20,9 +20,9 @@
   when: check_terraform_path.rc > 0
 
 - name: Check Terraform version
-  shell: >
-    set -o pipefail && \
-      terraform version | awk '{ print $NF }' | sed 's/^v//'
+  shell: |
+    set -o pipefail
+    terraform version | awk '{ print $NF }' | sed 's/^v//'
   args:
     executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   changed_when: false
@@ -37,11 +37,13 @@
 - name: Check Terraform meets the minimum version
   fail:
     msg: "Terraform {{ terraform_version }} found, {{ terraform_min_version }} or higher is required."
-  when: terraform_min_version
-        and terraform_version is version(terraform_min_version, '<')
+  when:
+    - terraform_min_version
+    - terraform_version is version(terraform_min_version, '<')
 
 - name: Check Terraform does not exceed the maximum version
   fail:
     msg: "Terraform {{ terraform_version }} found, this project does not support >= {{ terraform_max_version }}."
-  when: terraform_max_version
-        and terraform_version is version(terraform_max_version, '>=')
+  when:
+    - terraform_max_version
+    - terraform_version is version(terraform_max_version, '>=')

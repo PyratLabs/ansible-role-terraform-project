@@ -1,0 +1,33 @@
+---
+
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint -s .
+  ansible-lint
+platforms:
+  - name: terraform_project
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-centos8}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: ${MOLECULE_PREBUILT:-true}
+scenario:
+  check_sequence:
+    - lint
+    - cleanup
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - check
+  test_sequence:
+    - converge
+    - destroy
+provisioner:
+  name: ansible
+  options:
+    verbose: true
+verifier:
+  name: ansible

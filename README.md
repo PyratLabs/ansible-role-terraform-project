@@ -30,6 +30,7 @@ my spare time so I cannot promise a speedy fix delivery.
 | `terraform_min_version`   | Specify a minimum version of Terraform, eg. `0.11.0`. Specify `false` to skip. | `false`       |
 | `terraform_min_version`   | Specify a maximum version of Terraform, eg. `0.12.0`. Specify `false` to skip. | `false`       |
 | `terraform_exec_projects` | List of Terraform projects to plan/apply. See example below.                   | []            |
+| `terraform_destroy_all`   | Destroy all projects listed in `terraform_exec_projects` - Use with caution!   | `false`       |
 
 ## Dependencies
 
@@ -80,4 +81,4 @@ project that cannot be updated).
 
 ## Author Information
 
-[Xan Manning](https://xanmanning.co.uk/)
+[Xan Manning](https://xan.manning.io/)

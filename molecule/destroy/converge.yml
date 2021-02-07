@@ -1,0 +1,13 @@
+---
+
+- name: Converge
+  hosts: all
+  become: true
+  become_user: terraformuser
+  vars:
+    terraform_exec_projects:
+      - project_path: /home/terraformuser/projects/null
+        plan_file: null.tfplan
+    terraform_destroy_all: true
+  roles:
+    - role: xanmanning.terraform_project

@@ -16,29 +16,9 @@ env:
     - MOLECULE_DISTRO: ubuntu1804
     - MOLECULE_DISTRO: fedora29
     - MOLECULE_DISTRO: amazonlinux2
-
-    # Target version install
-    - MOLECULE_DISTRO: centos7
-      MOLECULE_PREPARE_PLAYBOOK: prepare-target.yml
-      MOLECULE_PLAYBOOK: playbook-target.yml
-    - MOLECULE_DISTRO: centos8
-      MOLECULE_PREPARE_PLAYBOOK: prepare-target.yml
-      MOLECULE_PLAYBOOK: playbook-target.yml
-    - MOLECULE_DISTRO: debian10
-      MOLECULE_PREPARE_PLAYBOOK: prepare-target.yml
-      MOLECULE_PLAYBOOK: playbook-target.yml
-    - MOLECULE_DISTRO: ubuntu1804
-      MOLECULE_PREPARE_PLAYBOOK: prepare-target.yml
-      MOLECULE_PLAYBOOK: playbook-target.yml
-    - MOLECULE_DISTRO: fedora29
-      MOLECULE_PREPARE_PLAYBOOK: prepare-target.yml
-      MOLECULE_PLAYBOOK: playbook-target.yml
-    - MOLECULE_DISTRO: amazonlinux2
-      MOLECULE_PREPARE_PLAYBOOK: prepare-target.yml
-      MOLECULE_PLAYBOOK: playbook-target.yml
 install:
   # Install test dependencies.
-  - pip install molecule==2.22 docker ansible
+  - pip install -r molecule/requirements.txt
 
 before_script:
   # Use actual Ansible Galaxy role name for the project directory.
@@ -49,8 +29,14 @@ before_script:
 script:
   # Run tests.
   - ansible-galaxy install xanmanning.terraform -p molecule/default/roles/
-  - molecule check
-  - molecule test
+  - ansible-galaxy install xanmanning.terraform -p molecule/target/roles/
+  - ansible-galaxy install xanmanning.terraform -p molecule/destroy/roles/
+  - molecule check -s default
+  - molecule test -s default
+  - molecule check -s target
+  - molecule test -s target
+  - molecule check -s destroy
+  - molecule test -s destroy
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

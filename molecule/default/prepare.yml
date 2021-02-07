@@ -33,6 +33,7 @@
         dest: /home/terraformuser/projects/null/
         owner: terraformuser
         group: user
+        mode: 0755
 
   roles:
     - xanmanning.terraform

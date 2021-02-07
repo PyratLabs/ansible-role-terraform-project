@@ -29,3 +29,6 @@ terraform_exec_projects: []
 #     variables_file: dev.tfvars   # Optional, path to variables file.
 #     variables:                   # Optional, key-values for variables.
 #       vm_size: t3.large
+
+# Destroy all defined Terraform projects
+terraform_destroy_all: false
