@@ -16,6 +16,14 @@
     variables: "{{ proj.variables | default(omit) }}"
   register: terraform_exec_result
 
+- name: Ensure outputs are written to JSON file
+  copy:
+    dest: "{{ proj.output_file | default(proj.project_path + '/outputs.json') }}"
+    content: |
+      {{ (terraform_exec_result.outputs | default({})) | to_nice_json(indent=2) }}
+    mode: 0600
+  when: terraform_exec_result.outputs is defined
+
 - name: Ensure Terraform plan file is removed after run
   file:
     path: "{{ proj.plan_file | default('project.tfplan') }}"
