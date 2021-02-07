@@ -40,6 +40,10 @@
         group: user
         mode: 0755
 
+  roles:
+    - role: xanmanning.terraform
+
+  tasks:
     - name: Ensure Terraform project is planned
       terraform:
         project_path: "{{ proj.project_path }}"
@@ -53,10 +57,7 @@
         targets: "{{ proj.targets | default(omit) }}"
         variables_file: "{{ proj.variables_file | default(omit) }}"
         variables: "{{ proj.variables | default(omit) }}"
+        binary_path: "{{ terraform_install_dir }}/terraform"
       loop: "{{ terraform_exec_projects }}"
       loop_control:
         loop_var: proj
-
-  roles:
-    - xanmanning.terraform
-    - xanmanning.terraform_project

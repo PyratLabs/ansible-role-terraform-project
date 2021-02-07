@@ -6,6 +6,9 @@ terraform_min_version: false
 # Specify a maximum version of Terraform, eg. `0.12.0`. Specify `false` to skip.
 terraform_max_version: false
 
+# Path to Terraform binary. Specify `false` to use Terraform in `${PATH}`.
+terraform_binary_path: false
+
 # List of Terraform projects to execute
 terraform_exec_projects: []
 

@@ -17,7 +17,7 @@
 - name: Extract the Terraform Plan Summary (Legacy)
   shell: |
     set -o pipefail
-    terraform plan -no-color {{ proj.plan_file | default('project.tfplan') }} | \
+    {{ terraform_binary_path }} plan -no-color {{ proj.plan_file | default('project.tfplan') }} | \
     grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
     sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
   args:
@@ -34,7 +34,7 @@
 - name: Extract the Terraform Plan Summary
   shell: |
     set -o pipefail
-    terraform show -no-color {{ proj.plan_file | default('project.tfplan') }} | \
+    {{ terraform_binary_path }} show -no-color {{ proj.plan_file | default('project.tfplan') }} | \
     grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
     sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
   args:

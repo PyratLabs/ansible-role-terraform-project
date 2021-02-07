@@ -3,6 +3,7 @@
 - name: Ensure Terraform project is planned
   terraform:
     project_path: "{{ proj.project_path }}"
+    binary_path: "{{ terraform_binary_path | default(omit) }}"
     state: planned
     plan_file: "{{ proj.plan_file | default('project.tfplan') }}"
     workspace: "{{ proj.workspace | default(omit) }}"

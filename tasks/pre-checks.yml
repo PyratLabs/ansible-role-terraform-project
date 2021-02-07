@@ -9,20 +9,33 @@
 
 - name: Check Terraform binary is installed and is in $PATH
   command: which terraform
-  register: check_terraform_path
+  register: check_terraform_which_path
   changed_when: false
   failed_when: false
   check_mode: false
+  when: not terraform_binary_path
+
+- name: Check defined Terraform binary path
+  stat:
+    path: "{{ terraform_binary_path }}"
+  register: check_terraform_path
+  when: terraform_binary_path
 
 - name: Fail the playbook if Terraform binary is not found
   fail:
     msg: "Terraform not found, please install Terraform. https://www.terraform.io/"
-  when: check_terraform_path.rc > 0
+  when: (check_terraform_which_path.rc is defined and check_terraform_which_path.rc > 0)
+        or (check_terraform_path.stat.exists is defined and check_terraform_path.stat.exists)
+
+- name: Ensure terraform_binary_path is defined
+  set_fact:
+    terraform_binary_path: "{{ check_terraform_which_path.stdout }}"
+  when: not terraform_binary_path
 
 - name: Check Terraform version
   shell: |
     set -o pipefail
-    terraform version | awk '{ print $NF }' | sed 's/^v//'
+    {{ terraform_binary_path }} version | awk '{ print $NF }' | sed 's/^v//'
   args:
     executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   changed_when: false

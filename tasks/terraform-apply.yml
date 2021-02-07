@@ -3,6 +3,7 @@
 - name: Ensure Terraform project is in the requested state
   terraform:
     project_path: "{{ proj.project_path }}"
+    binary_path: "{{ terraform_binary_path | default(omit) }}"
     state: "{{ (proj.state | default('present')) if not terraform_destroy_all else 'absent' }}"
     plan_file: "{{ proj.plan_file | default('project.tfplan') }}"
     state_file: "{{ proj.state_file | default(omit) }}"
