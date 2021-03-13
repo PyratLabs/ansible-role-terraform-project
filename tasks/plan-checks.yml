@@ -14,15 +14,10 @@
     - not terraform_destroy_all
     - (proj.state is not defined or proj.state != "absent")
 
-- name: Extract the Terraform Plan Summary (Legacy)
-  shell: |
-    set -o pipefail
-    {{ terraform_binary_path }} plan -no-color {{ proj.plan_file | default('project.tfplan') }} | \
-    grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
-    sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+- name: Extract the Terraform Plan (Legacy)
+  command: "{{ terraform_binary_path }} plan -no-color {{ proj.plan_file | default('project.tfplan') }}"
   args:
     chdir: "{{ proj.project_path }}"
-    executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   when:
     - terraform_version is version('0.12.0', '<')
     - not terraform_destroy_all
@@ -31,15 +26,10 @@
   changed_when: false
   register: terraform_plan_legacy
 
-- name: Extract the Terraform Plan Summary
-  shell: |
-    set -o pipefail
-    {{ terraform_binary_path }} show -no-color {{ proj.plan_file | default('project.tfplan') }} | \
-    grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
-    sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+- name: Extract the Terraform Plan
+  command: "{{ terraform_binary_path }} show -no-color {{ proj.plan_file | default('project.tfplan') }}"
   args:
     chdir: "{{ proj.project_path }}"
-    executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   when:
     - terraform_version is version('0.12.0', '>=')
     - not terraform_destroy_all
@@ -48,13 +38,30 @@
   changed_when: false
   register: terraform_plan_show
 
-- name: Ensure terraform_plan is defined
+- name: Extract the Terraform Plan Summary
+  shell: |
+    set -o pipefail
+    echo "{{ terraform_plan_legacy.stdout | default(terraform_plan_show.stdout) }}" | \
+    grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
+    sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+  args:
+    executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
+  when:
+    - not terraform_destroy_all
+    - (proj.state is not defined or proj.state != "absent")
+  check_mode: false
+  changed_when: false
+  register: terraform_plan_summary
+
+- name: Ensure terraform_plan and terraform_plan_summary is defined
   set_fact:
     terraform_plan: "{{ terraform_plan_legacy.stdout | default(terraform_plan_show.stdout) }}"
+    terraform_plan_summary: "{{ terraform_plan_summary.stdout }}"
   when: not terraform_destroy_all
 
 - name: Ensure terraform_plan is defined when destroying resources
   set_fact:
     terraform_plan: "Destroy has been specified"
+    terraform_plan_summary: "Destroy has been specified"
   when: terraform_destroy_all
         or (proj.state is defined and proj.state == "absent")

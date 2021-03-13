@@ -1,6 +1,6 @@
 ---
 
-- name: Ensure Terraform project is in the requested state
+- name: "Ensure Terraform project is {{ (proj.state | default('present')) if not terraform_destroy_all else 'absent' }}"
   terraform:
     project_path: "{{ proj.project_path }}"
     binary_path: "{{ terraform_binary_path | default(omit) }}"

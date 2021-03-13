@@ -1,0 +1,17 @@
+---
+
+- name: Display the Terraform Execution Summary
+  debug:
+    msg:
+      - "+---------------------------------------------------------------+"
+      - "| {{ 'TERRAFORM EXECUTION SUMMARY'.center(61) }} |"
+      - "+---------------------------------------------------------------+"
+      - "{{ terraform_exec_result.stdout_lines }}"
+
+- name: Display the Terraform Output Summary
+  debug:
+    msg:
+      - "+---------------------------------------------------------------+"
+      - "| {{ 'TERRAFORM OUTPUT SUMMARY'.center(61) }} |"
+      - "+---------------------------------------------------------------+"
+      - "{{ terraform_exec_result.outputs }}"

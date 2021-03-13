@@ -2,6 +2,8 @@
 
 dependency:
   name: galaxy
+  options:
+    role-file: molecule/requirements.yml
 driver:
   name: docker
 lint: |
@@ -15,14 +17,15 @@ platforms:
     pre_build_image: ${MOLECULE_PREBUILT:-true}
 scenario:
   check_sequence:
+    - dependency
     - lint
     - cleanup
-    - dependency
     - syntax
     - create
     - prepare
     - check
   test_sequence:
+    - dependency
     - converge
     - destroy
 provisioner:

@@ -40,10 +40,11 @@
         group: user
         mode: 0755
 
-  roles:
-    - role: xanmanning.terraform
-
   tasks:
+    - name: Include Terraform role
+      include_role:
+        name: xanmanning.terraform
+
     - name: Ensure Terraform project is planned
       terraform:
         project_path: "{{ proj.project_path }}"

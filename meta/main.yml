@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: terraform_project
+  namespace: xanmanning
   author: Xan Manning
   description: Ansible Role that wraps around and builds a workflow around Terraform projects.
   company: Pyrat Ltd.

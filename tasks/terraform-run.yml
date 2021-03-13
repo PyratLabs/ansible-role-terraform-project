@@ -11,4 +11,4 @@
 - include_tasks: terraform-apply.yml
   when: not ansible_check_mode
 
-- include_tasks: terraform-output.yml
+- include_tasks: "terraform-output-{{ 'plan' if ansible_check_mode else 'execute' }}.yml"

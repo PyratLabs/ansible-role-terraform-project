@@ -1,8 +1,8 @@
 # Ansible Role: Terraform Project
 
-Ansible Role that wraps around and builds a workflow around [Hashicorp Terraform](https://www.terraform.io/) projects.
+Ansible Role that wraps around and builds a workflow for [Hashicorp Terraform](https://www.terraform.io/) projects.
 
-[![Build Status](https://www.travis-ci.org/PyratLabs/ansible-role-terraform-project.svg?branch=master)](https://www.travis-ci.org/PyratLabs/ansible-role-terraform-project)
+[![CI](https://github.com/PyratLabs/ansible-role-terraform-project/actions/workflows/ci.yml/badge.svg)](https://github.com/PyratLabs/ansible-role-terraform-project/actions/workflows/ci.yml)
 
 ## Requirements
 
@@ -12,10 +12,8 @@ This role has been tested on Ansible 2.7.0+ against the following Linux Distribu
   - CentOS 8
   - CentOS 7
   - Debian 10
-  - Fedora 29
-  - Fedora 30
-  - Fedora 31
   - Ubuntu 18.04 LTS
+  - Ubuntu 20.04 LTS
 
 ## Disclaimer
 
