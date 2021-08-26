@@ -11,6 +11,7 @@
     lock_timeout: "{{ proj.lock_timeout | default(omit) }}"
     force_init: "{{ proj.force_init | default(true) }}"
     backend_config: "{{ proj.backend_config | default(omit) }}"
+    backend_config_files: "{{ proj.backend_config_files | default(omit) }}"
     targets: "{{ proj.targets | default(omit) }}"
     variables_file: "{{ proj.variables_file | default(omit) }}"
     variables: "{{ proj.variables | default(omit) }}"

@@ -61,6 +61,8 @@ project that cannot be updated).
         lock: true                   # Optional, state file locking if supported.
         lock_timeout: 300            # Optional, how long to lock if supported.
         force_init: true             # Optional
+        backend_config_files:        # Optional, list of files containing backend config
+          - config.hcl
         backend_config:              # Optional, key-values to provide at init stage.
           region: "eu-west-1"
           bucket: "some-bucket"

@@ -27,6 +27,8 @@ terraform_exec_projects: []
 #       region: "eu-west-1"
 #       bucket: "some-bucket"
 #       key: "random.tfstate"
+#     backend_config_files:
+#       - path/to/file             # Optional, path to backend config file
 #     targets:                     # Optional, list of specific resources to plan/apply to.
 #       some_target
 #     variables_file: dev.tfvars   # Optional, path to variables file.
