@@ -1,0 +1,38 @@
+---
+
+- include_tasks: terraform_plan.yml
+  when:
+    - not terraform_destroy_all
+    - tfproj.state is not defined or tfproj.state != "absent"
+
+- include_tasks: plan_checks.yml
+
+- include_tasks: terraform_output_plan.yml
+
+- name: Ensure Terraform project is provisioned
+  when: not ansible_check_mode
+  block:
+    - name: Ensure the operator is happy with the plan
+      tags:
+        - user-prompt
+        - molecule-notest
+      pause:
+        prompt:
+          msg: >-
+            Do you wish to continue with the above plan?
+            Type "Yes" or "Y" to continue, otherwise "Ctrl-C" and "A" to abort.
+      register: terraform_pause_input
+
+    - name: Stop the play if the operator has not specified they want to continue
+      tags:
+        - user-prompt
+        - molecule-notest
+      fail:
+        msg: Play cancelled by the user.
+      when:
+        - terraform_pause_input.user_input is defined
+        - (terraform_pause_input.user_input | lower) not in ['yes', 'y']
+
+    - include_tasks: terraform_apply.yml
+
+    - include_tasks: terraform_output_apply.yml

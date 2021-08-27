@@ -15,19 +15,6 @@ platforms:
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-centos8}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: ${MOLECULE_PREBUILT:-true}
-scenario:
-  check_sequence:
-    - dependency
-    - lint
-    - cleanup
-    - syntax
-    - create
-    - prepare
-    - check
-  test_sequence:
-    - dependency
-    - converge
-    - destroy
 provisioner:
   name: ansible
   options:

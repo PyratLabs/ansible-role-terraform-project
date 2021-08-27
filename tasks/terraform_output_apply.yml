@@ -6,7 +6,7 @@
       - "+---------------------------------------------------------------+"
       - "| {{ 'TERRAFORM EXECUTION SUMMARY'.center(61) }} |"
       - "+---------------------------------------------------------------+"
-      - "{{ terraform_exec_result.stdout_lines }}"
+      - "{{ terraform_apply_result.stdout_lines }}"
 
 - name: Display the Terraform Output Summary
   debug:
@@ -14,4 +14,4 @@
       - "+---------------------------------------------------------------+"
       - "| {{ 'TERRAFORM OUTPUT SUMMARY'.center(61) }} |"
       - "+---------------------------------------------------------------+"
-      - "{{ terraform_exec_result.outputs }}"
+      - "{{ terraform_apply_result.outputs }}"

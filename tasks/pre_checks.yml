@@ -24,8 +24,9 @@
 - name: Fail the playbook if Terraform binary is not found
   fail:
     msg: "Terraform not found, please install Terraform. https://www.terraform.io/"
-  when: (check_terraform_which_path.rc is defined and check_terraform_which_path.rc > 0)
-        or (check_terraform_path.stat.exists is defined and check_terraform_path.stat.exists)
+  when: >
+    (check_terraform_which_path.rc is defined and check_terraform_which_path.rc > 0)
+    or (check_terraform_path.stat.exists is defined and check_terraform_path.stat.exists)
 
 - name: Ensure terraform_binary_path is defined
   set_fact:
@@ -51,12 +52,12 @@
   fail:
     msg: "Terraform {{ terraform_version }} found, {{ terraform_min_version }} or higher is required."
   when:
-    - terraform_min_version
-    - terraform_version is version(terraform_min_version, '<')
+    - terraform_min_version | bool
+    - terraform_version is version((terraform_min_version | int), '<')
 
 - name: Check Terraform does not exceed the maximum version
   fail:
     msg: "Terraform {{ terraform_version }} found, this project does not support >= {{ terraform_max_version }}."
   when:
-    - terraform_max_version
-    - terraform_version is version(terraform_max_version, '>=')
+    - terraform_max_version | bool
+    - terraform_version is version((terraform_max_version | int), '>=')
