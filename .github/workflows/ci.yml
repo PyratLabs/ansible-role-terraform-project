@@ -26,13 +26,13 @@ jobs:
           - distro: ubuntu2004
             scenario: default
           - distro: centos7
-            scenario: destroy
+            scenario: default
           - distro: ubuntu1804
-            scenario: destroy
+            scenario: default
           - distro: debian9
-            scenario: target
+            scenario: default
           - distro: centos8
-            scenario: target
+            scenario: default
 
     steps:
       - name: Checkout codebase

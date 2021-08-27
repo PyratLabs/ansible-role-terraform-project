@@ -2,55 +2,57 @@
 
 - name: Check to see if plan file exists
   stat:
-    path: "{{ proj.project_path }}/{{ proj.plan_file | default('project.tfplan') }}"
+    path: "{{ tfproj.project_path }}/{{ tfproj.plan_file | default('project.tfplan') }}"
   register: check_terraform_tfplan
   check_mode: false
 
-- name: Fail the play if Terraform has not been run in check mode
+- name: Fail the play if Terraform has not been run in plan mode
   fail:
-    msg: "{{ proj.plan_file | default('project.tfplan') }} not found. Please ensure you run ansible in check-mode first."
+    msg: "{{ tfproj.plan_file | default('project.tfplan') }} not found. Please ensure you run `terraform plan` first."
   when:
     - not check_terraform_tfplan.stat.exists
     - not terraform_destroy_all
-    - (proj.state is not defined or proj.state != "absent")
+    - (tfproj.state is not defined or tfproj.state != "absent")
 
 - name: Extract the Terraform Plan (Legacy)
-  command: "{{ terraform_binary_path }} plan -no-color {{ proj.plan_file | default('project.tfplan') }}"
+  command: "{{ terraform_binary_path }} plan -no-color {{ tfproj.plan_file | default('project.tfplan') }}"
   args:
-    chdir: "{{ proj.project_path }}"
+    chdir: "{{ tfproj.project_path }}"
   when:
     - terraform_version is version('0.12.0', '<')
     - not terraform_destroy_all
-    - (proj.state is not defined or proj.state != "absent")
+    - (tfproj.state is not defined or tfproj.state != "absent")
   check_mode: false
   changed_when: false
   register: terraform_plan_legacy
 
 - name: Extract the Terraform Plan
-  command: "{{ terraform_binary_path }} show -no-color {{ proj.plan_file | default('project.tfplan') }}"
+  command: "{{ terraform_binary_path }} show -no-color {{ tfproj.plan_file | default('project.tfplan') }}"
   args:
-    chdir: "{{ proj.project_path }}"
+    chdir: "{{ tfproj.project_path }}"
   when:
     - terraform_version is version('0.12.0', '>=')
     - not terraform_destroy_all
-    - (proj.state is not defined or proj.state != "absent")
+    - (tfproj.state is not defined or tfproj.state != "absent")
   check_mode: false
   changed_when: false
+  failed_when: false
   register: terraform_plan_show
 
 - name: Extract the Terraform Plan Summary
   shell: |
     set -o pipefail
     echo "{{ terraform_plan_legacy.stdout | default(terraform_plan_show.stdout) }}" | \
-    grep -E "[0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy" | \
+    grep -E "([0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy|No changes.)" | \
     sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
   args:
     executable: "{{ terraform_check_bash_path.stdout_lines[0] }}"
   when:
     - not terraform_destroy_all
-    - (proj.state is not defined or proj.state != "absent")
+    - (tfproj.state is not defined or tfproj.state != "absent")
   check_mode: false
   changed_when: false
+  failed_when: false
   register: terraform_plan_summary
 
 - name: Ensure terraform_plan and terraform_plan_summary is defined
@@ -63,5 +65,6 @@
   set_fact:
     terraform_plan: "Destroy has been specified"
     terraform_plan_summary: "Destroy has been specified"
-  when: terraform_destroy_all
-        or (proj.state is defined and proj.state == "absent")
+  when: >
+    terraform_destroy_all
+    or (tfproj.state is defined and tfproj.state == "absent")

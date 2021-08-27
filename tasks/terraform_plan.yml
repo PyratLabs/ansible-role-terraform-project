@@ -1,0 +1,18 @@
+---
+
+- name: Ensure Terraform project is planned
+  terraform:
+    project_path: "{{ tfproj.project_path }}"
+    binary_path: "{{ terraform_binary_path | default(omit) }}"
+    state: planned
+    plan_file: "{{ tfproj.plan_file | default('project.tfplan') }}"
+    workspace: "{{ tfproj.workspace | default(omit) }}"
+    lock: "{{ tfproj.lock | default(omit) }}"
+    lock_timeout: "{{ tfproj.lock_timeout | default(omit) }}"
+    force_init: "{{ tfproj.force_init | default(true) }}"
+    backend_config: "{{ tfproj.backend_config | default(omit) }}"
+    backend_config_files: "{{ tfproj.backend_config_files | default(omit) }}"
+    targets: "{{ tfproj.targets | default(omit) }}"
+    variables_file: "{{ tfproj.variables_file | default(omit) }}"
+    variables: "{{ tfproj.variables | default(omit) }}"
+  check_mode: false

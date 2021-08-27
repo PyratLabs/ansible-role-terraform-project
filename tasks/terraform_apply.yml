@@ -1,0 +1,30 @@
+---
+
+- name: "Ensure Terraform project is {{ (tfproj.state | default('present')) if not terraform_destroy_all else 'absent' }}"
+  terraform:
+    project_path: "{{ tfproj.project_path }}"
+    binary_path: "{{ terraform_binary_path | default(omit) }}"
+    state: "{{ (tfproj.state | default('present')) if not terraform_destroy_all else 'absent' }}"
+    plan_file: "{{ tfproj.plan_file | default('project.tfplan') }}"
+    state_file: "{{ tfproj.state_file | default(omit) }}"
+    workspace: "{{ tfproj.workspace | default(omit) }}"
+    purge_workspace: "{{ tfproj.purge_workspace | default(false) }}"
+    lock: "{{ tfproj.lock | default(omit) }}"
+    lock_timeout: "{{ tfproj.lock_timeout | default(omit) }}"
+    targets: "{{ tfproj.targets | default(omit) }}"
+    variables_file: "{{ tfproj.variables_file | default(omit) }}"
+    variables: "{{ tfproj.variables | default(omit) }}"
+  register: terraform_apply_result
+
+- name: Ensure outputs are written to JSON file
+  copy:
+    dest: "{{ tfproj.output_file | default(tfproj.project_path + '/outputs.json') }}"
+    content: |
+      {{ (terraform_apply_result.outputs | default({})) | to_nice_json(indent=2) }}
+    mode: 0600
+  when: terraform_apply_result.outputs is defined
+
+- name: Ensure Terraform plan file is removed after run
+  file:
+    path: "{{ tfproj.plan_file | default('project.tfplan') }}"
+    state: absent

@@ -1,11 +1,12 @@
 ---
 
-- import_tasks: pre-checks.yml
+- import_tasks: pre_checks.yml
 
-- include_tasks: terraform-run.yml
+- include_tasks: terraform_run.yml
   loop: "{{ terraform_exec_projects }}"
   loop_control:
-    loop_var: proj
-  when: terraform_exec_projects is defined
-        and terraform_exec_projects is iterable
-        and terraform_exec_projects | length >= 1
+    loop_var: tfproj
+  when:
+    - terraform_exec_projects is defined
+    - terraform_exec_projects is iterable
+    - terraform_exec_projects | length >= 1

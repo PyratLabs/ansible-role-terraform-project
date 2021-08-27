@@ -22,9 +22,11 @@
         update_cache: true
       when: ansible_pkg_mgr == 'apt'
 
-    - name: Ensure unzip is installed
+    - name: Ensure unzip and which is installed
       package:
-        name: unzip
+        name:
+          - unzip
+          - which
         state: present
 
     - name: Copy project directory
@@ -39,3 +41,5 @@
     - name: Include Terraform role
       include_role:
         name: xanmanning.terraform
+      vars:
+        terraform_version: 0.14.7
