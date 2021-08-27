@@ -22,11 +22,10 @@
         update_cache: true
       when: ansible_pkg_mgr == 'apt'
 
-    - name: Ensure unzip and which is installed
+    - name: Ensure unzip is installed
       package:
         name:
           - unzip
-          - which
         state: present
 
     - name: Copy project directory
